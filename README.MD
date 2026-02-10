@@ -118,8 +118,3 @@ text = "The company's quarterly revenue exceeded analyst estimates by 15%."
 result = predict_sentiment(text)
 print(f"Predicted Sentiment: {result}") 
 # Output: Predicted Sentiment: positive
-
-
-📄 License
-
-This project is licensed under the MIT License.
