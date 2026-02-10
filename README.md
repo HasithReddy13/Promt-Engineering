@@ -1,125 +1,70 @@
-Financial Sentiment Analysis: Domain-Specific Fine-Tuning of DistilBERT
+Financial Sentiment Analysis: Domain-Specific Fine-Tuning
 
 📌 Project Overview
 
-Sentiment analysis in the financial sector is notoriously difficult because general-purpose language models often fail to capture domain-specific "directional" linguistics. For example, the word "loss" is generally negative, but the phrase "narrowed loss" is a positive signal for investors.
+This project focuses on the specialized task of Financial Sentiment Analysis. Standard AI models often struggle with financial language; for example, they might think the word "loss" is always bad, but they miss that a "narrowed loss" is actually a positive sign for a company.
 
-This project addresses these challenges by fine-tuning a DistilBERT model on the Financial Phrasebank dataset. Beyond standard fine-tuning, this implementation features a custom classification architecture and a weighted loss strategy to ensure high-precision sentiment scoring, even with imbalanced data.
+This project solves this by fine-tuning a DistilBERT model specifically for financial news. We added custom layers like Layer Normalization to make the training more stable and used a Weighted Loss strategy to ensure the model doesn't get biased toward "Neutral" statements.
 
-Final Results:
+🏆 Final Results
 
-Validation Accuracy: 97.62%
+97.6% Validation Accuracy
 
-Test Accuracy: 94.5%
+94.5% Test Accuracy
 
-Performance: Significant improvement over the base pre-trained model (which typically scores ~34% accuracy on this specialized task).
+Domain-Specific Logic: Successfully identifies complex financial signals.
 
 🚀 Key Technical Features
 
-1. Custom Model Architecture
+Custom Architecture: We built a custom "head" for the model that standardizes data during training, preventing errors.
 
-We moved beyond the standard library defaults by implementing a custom classification head. This head includes:
+Weighted Training: This ensures that rare "Positive" or "Negative" news is treated with high importance compared to common "Neutral" news.
 
-Projection Layer: A linear layer that processes the Transformer's contextual embeddings.
+Smart Data Cleaning: Uses code to automatically strip out stock tickers (like $AAPL) and website links to focus only on the sentiment of the words.
 
-ReLU Activation: Adds non-linearity to capture complex sentiment patterns.
+🛠️ Step-by-Step Setup Instructions
 
-Explicit Layer Normalization: Standardizes data during training to prevent "gradient issues" and ensure stable convergence.
+1. Requirements
 
-2. Weighted Loss Strategy
+Python: You need Python 3.8 or higher installed.
 
-Financial news is often skewed toward "Neutral" reporting. To prevent the model from ignoring rare but critical "Positive" or "Negative" signals, we implemented a Weighted Cross-Entropy Loss. This forces the model to penalize errors on minority classes more heavily.
+GPU: This project uses a Graphics Card (GPU) for speed. If your computer doesn't have one, Google Colab is highly recommended because it provides a free T4 GPU.
 
-3. Professional Data Cleaning
+2. Environment Setup
 
-The pipeline includes a custom regex-based cleaning function that removes:
-
-Stock Tickers (e.g., $AAPL, $TSLA) to prevent brand bias.
-
-Specialized URLs and non-alphanumeric noise.
-
-🛠️ Setup & Installation Instructions
-
-To reproduce these results or use the model for your own predictions, follow these clear steps.
-
-1. Prerequisites
-
-Python: Version 3.8 or higher.
-
-Hardware: Access to an NVIDIA GPU is highly recommended. If you do not have one locally, use Google Colab (it provides a free T4 GPU).
-
-2. Environment Configuration
-
-If running locally, it is recommended to use a virtual environment:
-
-# Create a virtual environment
-python -m venv fin_env
-
-# Activate it
-# On Windows:
-fin_env\Scripts\activate
-# On Mac/Linux:
-source fin_env/bin/activate
-
-
-3. Installing Dependencies
-
-Run the following command to install all necessary machine learning libraries:
+If you are running this locally, install the required libraries:
 
 pip install transformers datasets evaluate accelerate scikit-learn seaborn matplotlib torch
 
 
-4. Running the Notebook (Step-by-Step)
+3. Running in Google Colab (Recommended)
 
-Upload to Colab: Upload the Untitled2-4.ipynb file to your Google Drive and open it with Google Colab.
+Upload: Upload the provided .ipynb file to your Google Colab.
 
-Enable GPU: Go to Edit -> Notebook settings -> Select T4 GPU from the Hardware accelerator dropdown -> Save.
+Turn on GPU: - Click Edit -> Notebook settings.
 
-Execution: Click Runtime -> Run all.
+Select T4 GPU from the "Hardware accelerator" list.
 
-The script will automatically download the DistilBERT weights.
+Click Save.
 
-It will perform three hyperparameter experiments to find the best settings.
+Execute: Click Runtime -> Run all.
 
-It will generate a Confusion Matrix and a Classification Report at the end.
+🔍 How We Evaluate Success
 
-🔍 Model Evaluation
+We use professional metrics to verify the model:
 
-Results Summary
+Confusion Matrix: A visual grid showing exactly where the model succeeded or failed.
 
-Metric
+Classification Report: Detailed scores for Precision, Recall, and F1-score.
 
-Performance
+Error Analysis: We manually checked errors to understand model limits, specifically regarding complex accounting phrases.
 
-Peak Validation Accuracy
+💻 How to Predict Sentiment
 
-97.62%
+Once you have run the notebook, you can use the built-in function to test any sentence:
 
-Final Test Accuracy
-
-94.49%
-
-Evaluation Set
-
-10% Unseen Data
-
-Error Analysis (Pattern Identification)
-
-Out of 127 test samples, the model missed only 7.
-
-Identified Pattern: The model primarily struggles with Lexical Inversion. For instance, it may misclassify "narrowed loss" because the token "loss" is strongly associated with negative sentiment, even when the context "narrowed" makes it positive.
-
-💻 Usage Example
-
-After the final cell in the notebook is run, you can use the predict_sentiment function for real-time analysis:
-
-# Example Usage:
-text = "The company's quarterly revenue exceeded analyst estimates by 15%."
-result = predict_sentiment(text)
-print(f"Predicted Sentiment: {result}") 
-# Output: Predicted Sentiment: positive
+text = "The company reported a massive growth in revenue this year."
+print(predict_sentiment(text))
+# Output: positive
 
 
-📄 License
-
-This project is licensed under the MIT License.
